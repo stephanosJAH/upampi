@@ -1,0 +1,98 @@
+---
+import { audience } from '../../data/content';
+---
+
+<section class="aud chapter" data-theme="light" id="para-quien" aria-labelledby="aud-title">
+  <div class="wrap aud-head">
+    <p class="label spark">Para quién</p>
+    <h2 id="aud-title" class="display d-l" data-split-reveal>
+      Para negocios que quieren crecer <span class="serif">sin complicarse</span> con la tecnología.
+    </h2>
+  </div>
+
+  <ol class="wrap aud-list">
+    {
+      audience.map((a, i) => (
+        <li class="aud-row" data-reveal>
+          <span class="mono aud-who">
+            <span class="aud-i">0{i + 1}</span> {a.who}
+          </span>
+          <h3 class="display aud-benefit">{a.benefit}</h3>
+          <div class="aud-body">
+            <p>{a.text}</p>
+            <p class="mono aud-ex">{a.example}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .aud {
+    padding-block: 8vh 14vh;
+  }
+  .aud-head {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 9vh;
+  }
+  .aud-head h2 {
+    max-width: 18ch;
+  }
+  .aud-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr) minmax(0, 1.6fr);
+    gap: 2rem;
+    align-items: baseline;
+    padding-block: 2.2rem;
+    border-top: 1px solid var(--line);
+  }
+  .aud-row::before {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: -0.6rem;
+    font: 300 1rem/1 var(--f-mono);
+    color: var(--fg-muted);
+    background: var(--bg);
+    padding-left: 0.4rem;
+  }
+  .aud-row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .aud-who {
+    display: flex;
+    gap: 0.8rem;
+  }
+  .aud-i {
+    color: var(--fg-muted);
+  }
+  .aud-benefit {
+    font-size: clamp(2.2rem, 4.4vw, 4.6rem);
+    transition:
+      transform 0.6s var(--ease-out),
+      color 0.4s;
+  }
+  .aud-row:hover .aud-benefit {
+    transform: translateX(0.8rem);
+  }
+  .aud-body {
+    display: grid;
+    gap: 0.9rem;
+    font-size: 1.02rem;
+    line-height: 1.45;
+  }
+  .aud-ex {
+    color: var(--fg-muted);
+    text-transform: none;
+    font-size: 0.72rem;
+  }
+  @media (max-width: 860px) {
+    .aud-row {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+  }
+</style>

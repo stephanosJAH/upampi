@@ -1,0 +1,80 @@
+# UPAMPI — Caddy (opción principal, HTTPS automático con Let's Encrypt)
+# Instalar en: /etc/caddy/Caddyfile   ·   Validar: caddy validate --config /etc/caddy/Caddyfile
+# Estructura esperada en el servidor:
+#   /var/www/upampi/current -> /var/www/upampi/releases/<timestamp>
+#   /var/www/upampi/current/dist/client   (estáticos)
+#   Node (systemd: upampi-contact) escuchando en 127.0.0.1:4321 para /api/*
+{
+	# EDITAR: correo para avisos de certificados
+	email admin@upampi.com
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+		X-Frame-Options "SAMEORIGIN"
+		Cross-Origin-Opener-Policy "same-origin"
+		# WebGL no requiere permisos especiales. blob: queda permitido para workers por si se agregan.
+		# frame-src: dominios de agenda (Cal.com / Calendly) por si se incrusta el widget en lugar de enlazarlo.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; frame-src https://cal.com https://app.cal.com https://calendly.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+		-Server
+	}
+}
+
+www.upampi.com {
+	import security_headers
+	redir https://upampi.com{uri} permanent
+}
+
+upampi.com {
+	import security_headers
+	encode zstd gzip
+
+	# Formulario de contacto -> servidor Node (Astro, endpoint on-demand)
+	handle /api/* {
+		header Cache-Control "no-store"
+		reverse_proxy 127.0.0.1:4321 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	handle {
+		root * /var/www/upampi/current/dist/client
+
+		# /_astro/* lleva hash de contenido: caché de 1 año
+		@immutable path /_astro/*
+		header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+		@media path /og/* /icons/* /favicon.ico /favicon.svg /manifest.webmanifest
+		header @media Cache-Control "public, max-age=86400"
+
+		@html not path /_astro/* /og/* /icons/* /favicon.ico /favicon.svg /manifest.webmanifest
+		header @html Cache-Control "no-cache"
+
+		try_files {path} {path}/index.html {path}.html
+		file_server
+	}
+
+	handle_errors {
+		@notfound expression {err.status_code} == 404
+		handle @notfound {
+			root * /var/www/upampi/current/dist/client
+			rewrite * /404.html
+			header Cache-Control "no-cache"
+			file_server
+		}
+		handle {
+			respond "{err.status_code} {err.status_text}"
+		}
+	}
+
+	log {
+		output file /var/log/caddy/upampi.access.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}

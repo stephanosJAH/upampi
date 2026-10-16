@@ -1,0 +1,131 @@
+---
+import { NAV, SITE } from '../config/site';
+---
+
+<div class="menu" id="site-menu" data-menu hidden transition:persist="site-menu">
+  <div class="menu-scrim" data-menu-close></div>
+  <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Menú">
+    <div class="menu-top">
+      <span class="label">Navegación</span>
+      <button class="menu-close mono" type="button" data-menu-close>Cerrar <span aria-hidden="true">✕</span></button>
+    </div>
+    <nav aria-label="Menú principal">
+      <ul class="menu-list">
+        {
+          NAV.map((item, i) => (
+            <li>
+              <a href={item.href} data-menu-link>
+                <span class="mi">0{i + 1}</span>
+                <span class="mt">{item.label}</span>
+                <span class="ma" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="menu-foot">
+      <a class="pill magnetic" href={SITE.bookingUrl} data-menu-link>Agenda una llamada de 30 min</a>
+      <a class="mono-link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .menu-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(5 6 7 / 0.35);
+    backdrop-filter: blur(3px);
+  }
+  .menu-panel {
+    view-transition-name: menu-panel;
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: min(560px, calc(100vw - 1.5rem));
+    max-height: calc(100svh - 1.5rem);
+    overflow: auto;
+    background: #f3f4ef;
+    color: #0b0c0e;
+    border-radius: 22px;
+    padding: 1.4rem 1.6rem 1.6rem;
+    display: grid;
+    gap: 1.75rem;
+    --fg: #0b0c0e;
+    --bg: #f3f4ef;
+    --fg-muted: #5c6066;
+    --line: rgb(11 12 14 / 0.12);
+    --line-strong: rgb(11 12 14 / 0.3);
+  }
+  .menu-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .menu-close {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+  }
+  .menu-close:hover {
+    background: #0b0c0e;
+    color: #f3f4ef;
+  }
+  .menu-list a {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: baseline;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .mi {
+    font: 400 0.6875rem/1 var(--f-mono);
+    color: var(--fg-muted);
+  }
+  .mt {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .ma {
+    font-family: var(--f-mono);
+    opacity: 0;
+    transform: translateX(-0.6rem);
+    transition:
+      opacity 0.3s,
+      transform 0.5s var(--ease-out);
+  }
+  .menu-list a:hover .mt,
+  .menu-list a:focus-visible .mt {
+    transform: translateX(0.6rem);
+  }
+  .menu-list a:hover .ma,
+  .menu-list a:focus-visible .ma {
+    opacity: 1;
+    transform: none;
+  }
+  .menu-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+</style>

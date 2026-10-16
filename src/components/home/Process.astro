@@ -1,0 +1,182 @@
+---
+import { steps } from '../../data/content';
+---
+
+<section class="proc chapter" id="proceso" data-theme="light" data-module="process" aria-labelledby="proc-title">
+  <div class="wrap proc-head">
+    <h2 id="proc-title" class="display d-xl" data-blur-reveal>Cómo trabajamos</h2>
+    <p class="proc-sub">Cinco etapas claras. Sabes qué pasa,<br />qué recibes y cuánto cuesta en cada una.</p>
+  </div>
+
+  <div class="wrap proc-body">
+    <div class="proc-list" role="tablist" aria-label="Etapas del proceso" aria-orientation="vertical">
+      {
+        steps.map((s, i) => (
+          <button
+            class="proc-tab"
+            role="tab"
+            id={`proc-tab-${i}`}
+            aria-controls={`proc-panel-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-step={i}
+          >
+            <span class="mono">0{i + 1}</span>
+            <span class="pt-name">{s.name}</span>
+            <span class="pt-arrow" aria-hidden="true">
+              →
+            </span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="proc-panels">
+      {
+        steps.map((s, i) => (
+          <div class="proc-panel" role="tabpanel" id={`proc-panel-${i}`} aria-labelledby={`proc-tab-${i}`} hidden={i !== 0}>
+            <p class="label">
+              Etapa 0{i + 1} / 0{steps.length}
+            </p>
+            <h3 class="display d-m pp-title">{s.title}</h3>
+            <p class="pp-text">{s.text}</p>
+            <p class="pp-deliv mono">
+              <span class="signal-dot" aria-hidden="true" /> Entregable: {s.deliverable}
+            </p>
+          </div>
+        ))
+      }
+      <div class="proc-controls">
+        <button class="sq" type="button" data-proc-prev aria-label="Etapa anterior">←</button>
+        <button class="sq" type="button" data-proc-next aria-label="Etapa siguiente">→</button>
+        <a class="mono-link" href="/contacto?tipo=diagnostico">Agenda un diagnóstico <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .proc {
+    padding-block: 14vh 12vh;
+  }
+  .proc-head {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1.2rem;
+    margin-bottom: 10vh;
+  }
+  .proc-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: start;
+  }
+  .proc-tab {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: baseline;
+    text-align: left;
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+    color: #8b8e91;
+    transition: color 0.35s;
+  }
+  .proc-tab:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .pt-name {
+    font-size: clamp(1.6rem, 2.6vw, 2.6rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .pt-arrow {
+    font-family: var(--f-mono);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 0.3s,
+      transform 0.5s var(--ease-out);
+  }
+  .proc-tab[aria-selected='true'] {
+    color: var(--fg);
+  }
+  .proc-tab[aria-selected='true'] .pt-arrow {
+    opacity: 1;
+    transform: none;
+  }
+  .proc-tab:hover {
+    color: var(--fg);
+  }
+  .proc-panels {
+    position: sticky;
+    top: calc(var(--header-h) + 3rem);
+    display: grid;
+    gap: 2.4rem;
+    min-height: 28rem;
+    align-content: start;
+  }
+  .proc-panel {
+    display: grid;
+    gap: 1.6rem;
+  }
+  .proc-panel[hidden] {
+    display: none;
+  }
+  .pp-text {
+    font-size: 1.12rem;
+    line-height: 1.5;
+    max-width: 52ch;
+  }
+  .pp-deliv {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line-strong);
+    width: fit-content;
+  }
+  .signal-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--ink-0);
+  }
+  .proc-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .proc-controls .mono-link {
+    margin-left: 1.5rem;
+  }
+  .sq {
+    width: 3rem;
+    height: 3rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+    font-family: var(--f-mono);
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  .sq:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  @media (max-width: 860px) {
+    .proc-body {
+      grid-template-columns: 1fr;
+    }
+    .proc-panels {
+      position: relative;
+      top: 0;
+      min-height: 0;
+    }
+    .proc-controls {
+      flex-wrap: wrap;
+    }
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import type { ServiceIcon } from '../data/services';
+
+/** Line-art icons built from concentric / parallel strokes (drawn with DrawSVG). */
+interface Props {
+  icon: ServiceIcon;
+  class?: string;
+  draw?: boolean;
+}
+const { icon, class: cls, draw = true } = Astro.props;
+const n = [0, 1, 2, 3, 4];
+---
+
+<svg
+  class:list={['svc-icon', cls]}
+  viewBox="0 0 120 120"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.1"
+  aria-hidden="true"
+  data-draw={draw ? '' : undefined}
+>
+  {
+    icon === 'transform' &&
+      n.map((i) => (
+        <rect x={14 + i * 9} y={14 + i * 9} width={92 - i * 18} height={92 - i * 18} rx={i * 9} transform={`rotate(${i * 9} 60 60)`} />
+      ))
+  }
+  {
+    icon === 'custom' &&
+      n.slice(0, 4).map((i) => {
+        const s = 1 - i * 0.2;
+        return (
+          <g transform={`translate(60 ${62 + i * 3}) scale(${s}) translate(-60 -60)`}>
+            <path d="M60 12 L104 36 V84 L60 108 L16 84 V36 Z" />
+            <path d="M16 36 L60 60 L104 36 M60 60 V108" />
+          </g>
+        );
+      })
+  }
+  {
+    icon === 'automation' && (
+      <g>
+        {[0, 1, 2, 3].map((i) => (
+          <circle cx="38" cy="60" r={8 + i * 7} />
+        ))}
+        {[0, 1, 2, 3].map((i) => (
+          <circle cx="82" cy="60" r={8 + i * 7} />
+        ))}
+        <path d="M38 31 C 60 31, 60 89, 82 89 M38 89 C 60 89, 60 31, 82 31" />
+      </g>
+    )
+  }
+  {
+    icon === 'ai' && (
+      <g>
+        {n.map((i) => (
+          <circle cx="60" cy="60" r={10 + i * 10} stroke-dasharray={i % 2 ? '2 4' : undefined} />
+        ))}
+        {Array.from({ length: 12 }, (_, i) => {
+          const a = (i / 12) * Math.PI * 2;
+          return <line x1={60 + Math.cos(a) * 52} y1={60 + Math.sin(a) * 52} x2={60 + Math.cos(a) * 58} y2={60 + Math.sin(a) * 58} />;
+        })}
+        <circle cx="60" cy="60" r="3" fill="currentColor" />
+      </g>
+    )
+  }
+  {
+    icon === 'apps' && (
+      <g>
+        {[0, 1, 2, 3].map((i) => (
+          <rect x={36 + i * 5} y={12 + i * 6} width={48 - i * 10} height={96 - i * 12} rx={10 - i * 2} />
+        ))}
+        <line x1="54" y1="100" x2="66" y2="100" />
+        {[0, 1, 2].map((i) => (
+          <rect x={6 + i * 4} y={40 + i * 4} width={30 - i * 8} height={40 - i * 8} rx="3" />
+        ))}
+        {[0, 1, 2].map((i) => (
+          <rect x={86 + i * 4} y={30 + i * 4} width={28 - i * 8} height={52 - i * 8} rx="3" />
+        ))}
+      </g>
+    )
+  }
+  {
+    icon === 'data' && (
+      <g>
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => {
+          const h = [26, 40, 32, 58, 48, 72, 86][i];
+          return (
+            <g>
+              <line x1={20 + i * 13} y1={104} x2={20 + i * 13} y2={104 - h} />
+              <line x1={24 + i * 13} y1={104} x2={24 + i * 13} y2={104 - h * 0.7} stroke-opacity=".5" />
+            </g>
+          );
+        })}
+        <path d="M14 70 L34 60 L52 66 L72 40 L92 46 L108 18" />
+        <path d="M14 78 L34 68 L52 74 L72 48 L92 54 L108 26" stroke-opacity=".5" />
+        <line x1="10" y1="108" x2="112" y2="108" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .svc-icon {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+</style>

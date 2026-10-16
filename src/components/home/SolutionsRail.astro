@@ -1,0 +1,234 @@
+---
+import { solutions } from '../../data/solutions';
+import SolutionArt from '../SolutionArt.astro';
+
+// Card widths (vw) and vertical placement vary to break the rhythm.
+const widths = [30, 23, 34, 25, 30, 23, 34, 25];
+const places = ['top', 'bottom', 'mid', 'top', 'bottom', 'mid', 'top', 'bottom'];
+const INTRO = 34;
+const END = 40;
+const GAP = 3.5;
+const PAD = 4;
+const railW = INTRO + END + widths.reduce((a, b) => a + b, 0) + GAP * (widths.length + 1) + PAD * 2;
+---
+
+<section class="rail chapter" id="soluciones" data-theme="light" data-rail data-module="rail" style={`--rail-w:${railW}vw`} aria-labelledby="rail-title">
+  <div class="rail-view">
+    <hr class="hairline rail-rule" data-plus />
+    <div class="rail-track" data-rail-track style={`--gap:${GAP}vw;--pad:${PAD}vw`}>
+      <div class="rail-intro" style={`width:${INTRO}vw`}>
+        <p class="label spark">Soluciones por industria</p>
+        <h2 id="rail-title" class="display d-l">Ideas que ya podrían estar trabajando <span class="serif">para ti</span></h2>
+        <p class="rail-note">
+          Ejemplos ilustrativos de lo que construimos para negocios como el tuyo. Cada uno se adapta a tu operación real.
+        </p>
+        <a class="mono-link" href="/soluciones">Ver todas las soluciones <span class="arrow">→</span></a>
+      </div>
+
+      {
+        solutions.map((s, i) => (
+          <a
+            class:list={['rcard', `rcard--${places[i]}`]}
+            href={`/soluciones/${s.slug}`}
+            style={`width:${widths[i]}vw`}
+            data-cursor-view="Explorar"
+          >
+            <div class="rcard-media" transition:name={`sol-media-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph">
+              <SolutionArt art={s.art} tone={s.tone} />
+            </div>
+            <div class="rcard-meta">
+              <span class="mono">{s.num} — {s.industry}</span>
+            </div>
+            <h3 class="rcard-title" transition:name={`sol-title-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph-title">
+              {s.title}
+            </h3>
+            <div class="rcard-foot">
+              <p class="rcard-line">{s.line}</p>
+              <span class="mono-link">
+                Explorar solución <span class="arrow">→</span>
+              </span>
+            </div>
+          </a>
+        ))
+      }
+
+      <div class="rail-end" style={`width:${END}vw`}>
+        <p class="display d-m">Descubre el índice completo, filtra por tipo de solución y encuentra la que se parece a tu negocio.</p>
+        <a class="mono-link" href="/soluciones">Ver el índice <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="rail-progress" aria-hidden="true"><i></i></div>
+  </div>
+</section>
+
+<style>
+  .rail {
+    position: relative;
+    height: calc(100vh + var(--rail-w) - 100vw);
+  }
+  .rail-view {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+  }
+  .rail-rule {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: calc(var(--header-h) + 1.2rem);
+    --plus-x: 50%;
+  }
+  .rail-track {
+    display: flex;
+    align-items: stretch;
+    gap: var(--gap);
+    width: var(--rail-w);
+    padding-inline: var(--pad);
+    height: min(72vh, 760px);
+    will-change: transform;
+  }
+  .rail-intro,
+  .rail-end {
+    flex: none;
+    display: grid;
+    align-content: center;
+    gap: 1.8rem;
+    justify-items: start;
+  }
+  .rail-intro h2 {
+    max-width: 12ch;
+  }
+  .rail-note {
+    max-width: 34ch;
+    color: var(--fg-muted);
+  }
+  .rail-end {
+    padding-left: 3vw;
+    border-left: 1px solid var(--line);
+  }
+  .rcard {
+    flex: none;
+    display: grid;
+    grid-template-rows: auto auto auto 1fr;
+    gap: 0.8rem;
+    align-self: start;
+  }
+  .rcard--bottom {
+    align-self: end;
+  }
+  .rcard--mid {
+    align-self: center;
+  }
+  .rcard-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #cfd0cb;
+  }
+  .rcard--mid .rcard-media {
+    aspect-ratio: 5 / 4;
+  }
+  .rcard-media :global(svg) {
+    transition: transform 1.1s var(--ease-out);
+  }
+  .rcard:hover .rcard-media :global(svg) {
+    transform: scale(1.05);
+  }
+  .rcard-meta {
+    color: var(--fg-muted);
+  }
+  .rcard-title {
+    font-size: clamp(1.4rem, 2vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    width: fit-content;
+  }
+  .rcard-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+  }
+  .rcard-line {
+    font-size: 0.92rem;
+    line-height: 1.38;
+    color: #3d4046;
+    max-width: 32ch;
+  }
+  .rcard-foot .mono-link {
+    flex: none;
+    gap: 1.2rem;
+  }
+  .rail-progress {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 1.6rem;
+    height: 1px;
+    background: var(--line);
+  }
+  .rail-progress i {
+    position: absolute;
+    inset: 0;
+    background: var(--fg);
+    transform-origin: left;
+    transform: scaleX(var(--rail-p, 0));
+  }
+
+  @media (max-width: 760px) {
+    .rail {
+      height: auto;
+    }
+    .rail-view {
+      position: relative;
+      height: auto;
+      overflow: visible;
+      padding-block: 6rem 4rem;
+    }
+    .rail-rule,
+    .rail-progress {
+      display: none;
+    }
+    .rail-track {
+      flex-direction: column;
+      width: auto;
+      height: auto;
+      gap: 3.5rem;
+      padding-inline: var(--gutter);
+      transform: none !important;
+    }
+    .rail-intro,
+    .rail-end,
+    .rcard {
+      width: auto !important;
+    }
+    .rail-end {
+      border-left: 0;
+      padding-left: 0;
+      border-top: 1px solid var(--line);
+      padding-top: 2rem;
+    }
+    .rcard-foot {
+      flex-direction: column;
+      align-items: start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) and (min-width: 761px) {
+    .rail {
+      height: auto;
+    }
+    .rail-view {
+      position: relative;
+      height: auto;
+      overflow-x: auto;
+      padding-block: 8rem 5rem;
+    }
+    .rail-track {
+      transform: none !important;
+    }
+  }
+</style>

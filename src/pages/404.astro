@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Página no encontrada" theme="dark" noindex>
+  <section class="nf chapter wrap" data-theme="dark">
+    <p class="label spark">Error 404</p>
+    <h1 class="display d-xxl">Este proceso <span class="serif">no existe</span>.</h1>
+    <p class="lede">Quizá el enlace cambió o se escribió mal. Te dejamos rutas que sí funcionan:</p>
+    <div class="nf-links">
+      <a class="mono-link" href="/">Inicio <span class="arrow">→</span></a>
+      <a class="mono-link" href="/soluciones">Soluciones <span class="arrow">→</span></a>
+      <a class="mono-link" href="/servicios">Servicios <span class="arrow">→</span></a>
+      <a class="mono-link" href="/contacto">Contacto <span class="arrow">→</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100vh;
+    display: grid;
+    align-content: center;
+    gap: 2rem;
+    padding-top: var(--header-h);
+    padding-bottom: 10vh;
+  }
+  .nf h1 {
+    max-width: 12ch;
+  }
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+  }
+</style>

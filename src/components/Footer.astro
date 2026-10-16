@@ -1,0 +1,199 @@
+---
+import { NAV, SITE } from '../config/site';
+import Logo from './Logo.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer chapter" data-theme="dark" data-chapter>
+  <div class="smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <div class="wrap footer-cta">
+    <p class="label spark" data-reveal>Siguiente paso</p>
+    <h2 class="display d-xl footer-title" data-split-reveal>
+      ¿Listo para hacer tu negocio <span class="serif">más inteligente?</span>
+    </h2>
+    <div class="footer-ctas">
+      <a class="mono-link" href="/contacto">Cuéntanos tu proyecto <span class="arrow">→</span></a>
+      <a class="mono-link" href={SITE.bookingUrl}>Agenda una llamada de 30 min <span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="wrap footer-grid">
+    <div>
+      <p class="label">Tu hora local</p>
+      <p class="mono big-mono" data-local-time>
+        <span data-tz>—</span> <span aria-hidden="true">→</span> <time data-clock>--:--</time>
+      </p>
+    </div>
+    <div>
+      <p class="label">Proyectos y consultas</p>
+      <a class="foot-link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <a class="foot-link" href="/contacto">Formulario de contacto</a>
+    </div>
+    <div>
+      <p class="label">Redes</p>
+      {
+        SITE.socials.map((s) => (
+          <a class="foot-link" href={s.href} target="_blank" rel="noopener noreferrer">
+            {s.label} <span aria-hidden="true">↗</span>
+          </a>
+        ))
+      }
+    </div>
+    <nav aria-label="Pie de página">
+      <p class="label">Sitio</p>
+      {
+        NAV.map((n) => (
+          <a class="foot-link" href={n.href}>
+            {n.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="wordmark" data-module="footer-lines">
+    <canvas class="wordmark-canvas" aria-hidden="true"></canvas>
+    <Logo variant="word" class="wordmark-fallback" />
+    <span class="sr-only">UPAMPI</span>
+  </div>
+
+  <div class="wrap footer-base">
+    <span class="mono">© {year} UPAMPI · Smart Software</span>
+    <span class="mono hint"><span class="signal">✦</span> Pasa el cursor por las líneas · activa el sonido arriba</span>
+    <a class="mono" href="/privacidad">Aviso de privacidad</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: clip;
+    padding-top: clamp(7rem, 16vh, 12rem);
+    background: var(--ink-0);
+    isolation: isolate;
+  }
+  .smoke {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    filter: blur(60px);
+    opacity: 0.9;
+  }
+  .smoke i {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(120 128 140 / 0.22), transparent 70%);
+    animation: drift 26s ease-in-out infinite alternate;
+  }
+  .smoke i:nth-child(1) {
+    left: -20vw;
+    top: 10%;
+  }
+  .smoke i:nth-child(2) {
+    right: -25vw;
+    top: 30%;
+    animation-duration: 34s;
+    background: radial-gradient(closest-side, rgb(205 255 59 / 0.07), transparent 70%);
+  }
+  .smoke i:nth-child(3) {
+    left: 20vw;
+    bottom: -40vw;
+    animation-duration: 40s;
+  }
+  @keyframes drift {
+    to {
+      transform: translate3d(8vw, -6vh, 0) scale(1.15);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .smoke i {
+      animation: none;
+    }
+  }
+
+  .footer-cta {
+    display: grid;
+    gap: 2rem;
+  }
+  .footer-title {
+    max-width: 14ch;
+  }
+  .footer-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 3rem;
+  }
+
+  .footer-grid {
+    margin-top: clamp(5rem, 12vh, 9rem);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .footer-grid .label {
+    margin-bottom: 0.9rem;
+  }
+  .big-mono {
+    font-size: 0.95rem;
+  }
+  .foot-link {
+    display: block;
+    width: fit-content;
+    padding: 0.2rem 0;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.5s var(--ease-out);
+  }
+  .foot-link:hover {
+    background-size: 100% 1px;
+  }
+
+  .wordmark {
+    position: relative;
+    margin-top: clamp(3rem, 8vh, 6rem);
+    padding-inline: var(--gutter);
+    height: calc((100vw - 2 * var(--gutter)) * 0.224);
+  }
+  .wordmark-canvas {
+    position: absolute;
+    inset: 0 var(--gutter);
+    width: calc(100% - 2 * var(--gutter));
+    height: 100%;
+  }
+  .wordmark :global(.wordmark-fallback) {
+    width: 100%;
+    height: 100%;
+    color: #2a2d33;
+  }
+  .wordmark.is-live :global(.wordmark-fallback) {
+    visibility: hidden;
+  }
+
+  .footer-base {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    padding-block: 1.5rem 2rem;
+    color: var(--fg-muted);
+  }
+  .footer-base a:hover {
+    color: var(--fg);
+  }
+
+  @media (max-width: 860px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hint {
+      display: none;
+    }
+  }
+</style>

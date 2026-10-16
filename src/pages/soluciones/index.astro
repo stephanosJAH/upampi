@@ -1,0 +1,258 @@
+---
+import Base from '../../layouts/Base.astro';
+import Wipe from '../../components/Wipe.astro';
+import SolutionArt from '../../components/SolutionArt.astro';
+import { solutions, categories, categoryLabel } from '../../data/solutions';
+
+const spans = ['wide', 'tall', 'std', 'std', 'std', 'wide', 'tall', 'std'];
+---
+
+<Base
+  title="Soluciones"
+  description="Índice de soluciones ilustrativas de UPAMPI por industria: automatización, inteligencia artificial, apps web y móviles e integraciones para pymes."
+  theme="light"
+  ogImage="/og/soluciones.png"
+>
+  <section class="sx chapter" data-theme="light" data-module="sol-index">
+    <div class="wrap sx-head">
+      <p class="label spark">Índice · {solutions.length} soluciones</p>
+      <h1 class="display d-xxl sx-title" data-split-reveal>Soluciones</h1>
+      <p class="lede">
+        Ejemplos ilustrativos, por industria, de lo que podemos construir para tu negocio. No son clientes: son puntos
+        de partida que adaptamos a tu operación.
+      </p>
+    </div>
+
+    <div class="wrap sx-bar">
+      <div class="sx-filters" role="group" aria-label="Filtrar por tipo">
+        {
+          categories.map((c, i) => (
+            <button class="chip" type="button" data-filter={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+      <div class="sx-layout" role="group" aria-label="Vista">
+        <button class="chip" type="button" data-layout="grid" aria-pressed="true">Cuadrícula</button>
+        <button class="chip" type="button" data-layout="list" aria-pressed="false">Lista</button>
+      </div>
+    </div>
+    <p class="sr-only" aria-live="polite" data-sx-status></p>
+
+    <ul class="wrap sx-grid" data-sx-grid data-view="grid">
+      {
+        solutions.map((s, i) => (
+          <li
+            class:list={['sx-item', `sx-${spans[i]}`]}
+            data-cats={s.categories.join(' ')}
+            style={`--vtn: sx-card-${s.slug}`}
+          >
+            <a href={`/soluciones/${s.slug}`} class="sx-link" data-cursor-view="Explorar">
+              <div class="sx-media" transition:name={`sol-media-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph">
+                <SolutionArt art={s.art} tone={s.tone} />
+              </div>
+              <div class="sx-info">
+                <span class="mono sx-num">{s.num}</span>
+                <h2 class="sx-name" transition:name={`sol-title-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph-title">
+                  {s.title}
+                </h2>
+                <span class="mono sx-ind">{s.industry}</span>
+                <p class="sx-line">{s.line}</p>
+                <span class="mono sx-cats">{s.categories.map(categoryLabel).join(' · ')}</span>
+                <span class="sx-arrow mono" aria-hidden="true">
+                  →
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="wrap sx-empty mono" hidden data-sx-empty>No hay soluciones en esta categoría todavía.</p>
+  </section>
+  <Wipe to="dark" />
+</Base>
+
+<style>
+  .sx {
+    padding-top: calc(var(--header-h) + 10vh);
+    padding-bottom: 18vh;
+    min-height: 100vh;
+  }
+  .sx-head {
+    display: grid;
+    gap: 1.6rem;
+  }
+  .sx-title {
+    font-size: clamp(4rem, 16vw, 18rem);
+    line-height: 0.82;
+    letter-spacing: -0.065em;
+  }
+  .sx-bar {
+    position: sticky;
+    top: calc(var(--header-h) - 0.5rem);
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 6vh;
+    padding-block: 0.9rem;
+    background: color-mix(in srgb, var(--fog-1) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .sx-filters,
+  .sx-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .sx-grid {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-flow: dense;
+    gap: 4rem clamp(1rem, 2vw, 2rem);
+  }
+  .sx-item {
+    grid-column: span 4;
+  }
+  .sx-item[hidden] {
+    display: none;
+  }
+  /* card-level names only during same-document (filter/layout) transitions */
+  :global(html.vt-same-doc) .sx-item {
+    view-transition-name: var(--vtn);
+    view-transition-class: sol-card;
+  }
+  .sx-wide {
+    grid-column: span 8;
+  }
+  .sx-tall {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+  .sx-link {
+    display: grid;
+    gap: 1rem;
+  }
+  .sx-media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  .sx-wide .sx-media {
+    aspect-ratio: 16 / 9;
+  }
+  .sx-tall .sx-media {
+    aspect-ratio: 3 / 4;
+  }
+  .sx-media :global(svg) {
+    transition: transform 1.1s var(--ease-out);
+  }
+  .sx-link:hover .sx-media :global(svg) {
+    transform: scale(1.05);
+  }
+  .sx-info {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.3rem 1rem;
+    align-items: baseline;
+  }
+  .sx-num {
+    grid-row: span 2;
+    color: var(--fg-muted);
+  }
+  .sx-name {
+    font-size: clamp(1.4rem, 2vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    width: fit-content;
+  }
+  .sx-ind {
+    justify-self: end;
+    color: var(--fg-muted);
+  }
+  .sx-line {
+    grid-column: 2 / -1;
+    color: #3d4046;
+    font-size: 0.95rem;
+    max-width: 52ch;
+  }
+  .sx-cats {
+    grid-column: 2 / -1;
+    color: var(--fg-muted);
+  }
+  .sx-arrow {
+    display: none;
+  }
+
+  /* list view */
+  .sx-grid[data-view='list'] {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .sx-grid[data-view='list'] .sx-item {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    border-top: 1px solid var(--line);
+  }
+  .sx-grid[data-view='list'] .sx-link {
+    grid-template-columns: 160px 1fr;
+    align-items: center;
+    gap: 2rem;
+    padding-block: 1.2rem;
+  }
+  .sx-grid[data-view='list'] .sx-media {
+    aspect-ratio: 4 / 3;
+  }
+  .sx-grid[data-view='list'] .sx-info {
+    grid-template-columns: 3rem minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  }
+  .sx-grid[data-view='list'] .sx-num {
+    grid-row: auto;
+  }
+  .sx-grid[data-view='list'] .sx-line,
+  .sx-grid[data-view='list'] .sx-cats {
+    display: none;
+  }
+  .sx-grid[data-view='list'] .sx-ind {
+    justify-self: start;
+  }
+  .sx-grid[data-view='list'] .sx-arrow {
+    display: block;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .sx-grid[data-view='list'] .sx-link:hover .sx-arrow {
+    transform: translateX(6px);
+  }
+  .sx-empty {
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 860px) {
+    .sx-item,
+    .sx-wide,
+    .sx-tall {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+    .sx-tall .sx-media {
+      aspect-ratio: 4 / 3;
+    }
+    .sx-grid[data-view='list'] .sx-link {
+      grid-template-columns: 96px 1fr;
+      gap: 1rem;
+    }
+    .sx-grid[data-view='list'] .sx-info {
+      grid-template-columns: 1fr;
+    }
+    .sx-grid[data-view='list'] .sx-num,
+    .sx-grid[data-view='list'] .sx-arrow {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,254 @@
+---
+import type { ArtVariant } from '../data/solutions';
+
+interface Props {
+  art: ArtVariant;
+  tone: 'dark' | 'light' | 'signal';
+  class?: string;
+}
+const { art, tone, class: cls } = Astro.props;
+const pal = {
+  dark: { bg: '#0f1114', ln: '#d8dad4', mu: '#4a4e55', ac: '#cdff3b', ink: '#0b0c0e' },
+  light: { bg: '#e6e7e2', ln: '#16181b', mu: '#a3a59f', ac: '#16181b', ink: '#e6e7e2' },
+  signal: { bg: '#cdff3b', ln: '#0b0c0e', mu: '#86a62a', ac: '#0b0c0e', ink: '#cdff3b' },
+}[tone];
+const grid = Array.from({ length: 9 }, (_, i) => i);
+---
+
+<svg
+  class:list={['sol-art', cls]}
+  viewBox="0 0 400 300"
+  preserveAspectRatio="xMidYMid slice"
+  role="img"
+  aria-hidden="true"
+ 
+>
+  <rect width="400" height="300" fill={pal.bg}></rect>
+  <g stroke={pal.mu} stroke-width="0.5" opacity="0.6">
+    {grid.map((i) => <line x1={i * 50} y1="0" x2={i * 50} y2="300" />)}
+    {grid.slice(0, 7).map((i) => <line x1="0" y1={i * 50} x2="400" y2={i * 50} />)}
+  </g>
+
+  {
+    art === 'shelves' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.4">
+        {[95, 170, 245].map((y, r) => (
+          <g>
+            <line x1="40" y1={y} x2="300" y2={y} />
+            {[0, 1, 2, 3, 4, 5].map((i) => {
+              const h = [44, 30, 52, 22, 38, 48][(i + r * 2) % 6];
+              const low = r === 1 && i === 4;
+              return (
+                <rect
+                  x={50 + i * 40}
+                  y={y - (low ? 8 : h)}
+                  width="30"
+                  height={low ? 8 : h}
+                  fill={low ? pal.ac : i % 2 ? 'none' : pal.ln}
+                  fill-opacity={low ? 1 : 0.1}
+                  stroke={low ? pal.ac : pal.ln}
+                />
+              );
+            })}
+          </g>
+        ))}
+        <path d="M225 155 C 280 130, 300 90, 330 92" stroke={pal.ac} stroke-dasharray="3 4" />
+        <rect x="318" y="62" width="62" height="78" rx="3" fill={pal.bg} />
+        <g stroke-width="1">
+          <line x1="328" y1="78" x2="368" y2="78" />
+          <line x1="328" y1="90" x2="360" y2="90" />
+          <line x1="328" y1="102" x2="364" y2="102" />
+          <line x1="328" y1="124" x2="352" y2="124" stroke={pal.ac} stroke-width="3" />
+        </g>
+        <circle cx="270" cy="148" r="5" fill={pal.ac} stroke="none" />
+      </g>
+    )
+  }
+
+  {
+    art === 'calendar' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.2">
+        {Array.from({ length: 35 }, (_, i) => {
+          const x = 46 + (i % 7) * 40;
+          const y = 58 + Math.floor(i / 7) * 40;
+          const booked = [2, 3, 8, 10, 11, 15, 17, 18, 22, 24, 29, 31].includes(i);
+          const hot = i === 16;
+          return (
+            <g>
+              <rect x={x} y={y} width="34" height="34" rx="2" fill={hot ? pal.ac : booked ? pal.ln : 'none'} fill-opacity={hot ? 1 : booked ? 0.1 : 0} stroke={hot ? pal.ac : pal.ln} stroke-opacity={booked || hot ? 1 : 0.35} />
+              {booked && i % 3 === 0 && <path d={`M${x + 10} ${y + 18} l5 5 l9 -11`} />}
+            </g>
+          );
+        })}
+        <g transform="translate(250 30)">
+          <rect width="128" height="44" rx="14" fill={pal.bg} stroke={pal.ln} />
+          <path d="M18 44 l-6 10 l16 -10" fill={pal.bg} />
+          <text x="16" y="27" fill={pal.ln} stroke="none" style="font-family:var(--f-mono)" font-size="9" letter-spacing=".5">✓ CITA CONFIRMADA</text>
+        </g>
+      </g>
+    )
+  }
+
+  {
+    art === 'orders' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.4">
+        <rect x="40" y="52" width="130" height="34" rx="14" />
+        <rect x="70" y="100" width="120" height="34" rx="14" fill={pal.ln} fill-opacity=".9" />
+        <rect x="40" y="148" width="104" height="34" rx="14" />
+        <rect x="70" y="196" width="128" height="34" rx="14" fill={pal.ln} fill-opacity=".9" />
+        <g stroke={pal.bg} stroke-width="2">
+          <line x1="86" y1="117" x2="160" y2="117" />
+          <line x1="86" y1="213" x2="168" y2="213" />
+        </g>
+        <line x1="56" y1="69" x2="140" y2="69" />
+        <line x1="56" y1="165" x2="118" y2="165" />
+        <path d="M206 140 H240" stroke-dasharray="2 4" />
+        <path d="M232 132 l8 8 l-8 8" />
+        <path d="M256 36 H362 V246 l-9 -8 l-9 8 l-9 -8 l-9 8 l-9 -8 l-9 8 l-9 -8 l-9 8 l-9 -8 l-9 8 l-9 -8 Z" fill={pal.bg} />
+        <line x1="272" y1="64" x2="330" y2="64" stroke-width="3" />
+        {[92, 112, 132, 152].map((y) => (
+          <g stroke-width="1">
+            <line x1="272" y1={y} x2="316" y2={y} />
+            <line x1="334" y1={y} x2="346" y2={y} />
+          </g>
+        ))}
+        <line x1="272" y1="190" x2="346" y2="190" stroke-dasharray="2 3" stroke-width="1" />
+        <line x1="306" y1="212" x2="346" y2="212" stroke-width="4" />
+      </g>
+    )
+  }
+
+  {
+    art === 'scan' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.2">
+        <g transform="rotate(-6 140 150)">
+          <rect x="70" y="40" width="140" height="190" fill={pal.bg} />
+          <rect x="86" y="58" width="50" height="14" fill={pal.ln} fill-opacity=".15" />
+          {[96, 110, 124, 138, 152, 166].map((y, i) => (
+            <line x1="86" y1={y} x2={150 + ((i * 17) % 40)} y2={y} stroke-opacity=".7" />
+          ))}
+          <line x1="140" y1="204" x2="194" y2="204" stroke-width="3" />
+        </g>
+        <rect x="52" y="128" width="190" height="2" fill={pal.ac} stroke="none" />
+        <rect x="52" y="118" width="190" height="22" fill={pal.ac} fill-opacity=".12" stroke="none" />
+        {[
+          ['EMISOR', 70],
+          ['FECHA', 128],
+          ['MONTO', 186],
+        ].map(([label, y]) => (
+          <g>
+            <path d={`M244 129 C 262 129, 262 ${Number(y) + 14}, 280 ${Number(y) + 14}`} stroke={pal.ac} stroke-opacity=".7" />
+            <rect x="280" y={y} width="92" height="28" rx="3" />
+            <text x="290" y={Number(y) + 18} fill={pal.ln} stroke="none" style="font-family:var(--f-mono)" font-size="8.5">
+              {label}
+            </text>
+            <rect x="346" y={Number(y) + 10} width="16" height="8" fill={pal.ac} stroke="none" />
+          </g>
+        ))}
+      </g>
+    )
+  }
+
+  {
+    art === 'routes' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.2">
+        <path d="M0 210 C 80 190, 120 250, 200 220 S 330 140, 400 160" stroke-opacity=".25" stroke-width="10" />
+        <path d="M40 240 L96 182 L150 196 L188 120 L262 138 L300 74 L356 58" stroke-width="1.6" />
+        <path d="M40 240 L96 182 L150 196 L188 120" stroke={pal.ac} stroke-width="3" />
+        {[
+          [40, 240],
+          [96, 182],
+          [150, 196],
+          [188, 120],
+          [262, 138],
+          [300, 74],
+        ].map(([x, y], i) => (
+          <circle cx={x} cy={y} r={i < 4 ? 5 : 4} fill={i < 4 ? pal.ln : pal.bg} />
+        ))}
+        <circle cx="188" cy="120" r="12" stroke={pal.ac} />
+        <circle cx="188" cy="120" r="20" stroke={pal.ac} stroke-opacity=".4" />
+        <path d="M356 58 m0 -22 a12 12 0 0 1 12 12 c0 10 -12 22 -12 22 s-12 -12 -12 -22 a12 12 0 0 1 12 -12 z" fill={pal.ln} />
+        <circle cx="356" cy="48" r="4" fill={pal.bg} stroke="none" />
+      </g>
+    )
+  }
+
+  {
+    art === 'campus' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.2">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <circle cx="290" cy="150" r={30 + i * 22} stroke-opacity={1 - i * 0.18} />
+        ))}
+        <circle cx="290" cy="150" r="10" fill={pal.ac} stroke="none" />
+        <rect x="36" y="56" width="150" height="40" rx="16" />
+        <line x1="54" y1="76" x2="160" y2="76" />
+        <rect x="70" y="112" width="140" height="56" rx="16" fill={pal.ac} fill-opacity=".9" stroke={pal.ac} />
+        <g stroke={pal.ink}>
+          <line x1="88" y1="132" x2="186" y2="132" />
+          <line x1="88" y1="148" x2="160" y2="148" />
+        </g>
+        <rect x="36" y="184" width="120" height="40" rx="16" />
+        <line x1="54" y1="204" x2="128" y2="204" />
+        <path d="M44 252 h10 m6 0 h10 m6 0 h10" stroke={pal.ac} stroke-width="3" />
+      </g>
+    )
+  }
+
+  {
+    art === 'quote' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.3">
+        <path d="M110 120 L190 80 L290 120 L210 160 Z" fill={pal.ln} fill-opacity=".06" />
+        <path d="M110 120 V200 L210 240 V160" />
+        <path d="M290 120 V200 L210 240" />
+        <path d="M110 120 L210 160 L290 120" />
+        <g stroke-width="0.8" stroke-dasharray="3 3">
+          <path d="M96 128 V208" />
+          <path d="M110 214 L210 254" />
+          <path d="M224 252 L300 214" />
+        </g>
+        <g style="font-family:var(--f-mono)" font-size="9" fill={pal.ln} stroke="none">
+          <text x="62" y="172">80 cm</text>
+          <text x="128" y="258">120 cm</text>
+          <text x="262" y="252">60 cm</text>
+        </g>
+        <g transform="translate(300 34)">
+          <path d="M0 0 H54 L70 16 V84 H0 Z" fill={pal.bg} />
+          <path d="M54 0 V16 H70" />
+          <text x="12" y="48" style="font-family:var(--f-mono)" font-size="11" fill={pal.ln} stroke="none">PDF</text>
+          <line x1="12" y1="62" x2="56" y2="62" stroke-width="3" />
+        </g>
+      </g>
+    )
+  }
+
+  {
+    art === 'board' && (
+      <g fill="none" stroke={pal.ln} stroke-width="1.2">
+        <rect x="30" y="34" width="340" height="232" rx="6" fill={pal.bg} />
+        <line x1="30" y1="62" x2="370" y2="62" />
+        <circle cx="46" cy="48" r="3" fill={pal.ln} />
+        <circle cx="58" cy="48" r="3" />
+        {[0, 1, 2].map((i) => (
+          <g>
+            <rect x={46 + i * 76} y="76" width="64" height="40" rx="3" />
+            <line x1={54 + i * 76} y1="104" x2={88 + i * 76 - i * 8} y2={104} stroke-width="5" stroke={i === 1 ? pal.ac : pal.ln} />
+          </g>
+        ))}
+        {[44, 70, 58, 92, 80, 110, 98].map((h, i) => (
+          <rect x={52 + i * 28} y={248 - h} width="16" height={h} fill={pal.ln} fill-opacity={i === 5 ? 1 : 0.12} />
+        ))}
+        <circle cx="314" cy="104" r="30" stroke-width="10" stroke-opacity=".15" />
+        <path d="M314 74 A30 30 0 1 1 286 114" stroke-width="10" stroke={pal.ln} />
+        <path d="M262 236 L284 214 L302 222 L324 190 L352 176" stroke={pal.ln} stroke-width="2" />
+        <circle cx="352" cy="176" r="4" fill={pal.ln} />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .sol-art {
+    width: 100%;
+    height: 100%;
+  }
+</style>

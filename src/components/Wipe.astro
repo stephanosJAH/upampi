@@ -1,0 +1,67 @@
+---
+/**
+ * Chapter wipe. A zero-height marker sits at the boundary between chapters.
+ * While the boundary travels up the viewport, a fixed grid of cells — clipped
+ * to the area above the boundary — fills with the next chapter's colour
+ * (rows bottom-up, snaking cell by cell). When the boundary reaches the top,
+ * the outgoing chapter is fully covered and the new one is already in place:
+ * the change itself is the visual event, with no empty scroll.
+ */
+interface Props {
+  to: 'dark' | 'light';
+  rows?: number;
+  cols?: number;
+}
+const { to, rows = 8, cols = 12 } = Astro.props;
+const cells = Array.from({ length: rows * cols }, (_, i) => i);
+---
+
+<div class:list={['wipe', `wipe--to-${to}`]} data-module="wipe" aria-hidden="true" style={`--rows:${rows};--cols:${cols}`}>
+  <div class="wipe-fix">
+    <div class="wipe-grid">
+      {cells.map((i) => <i data-r={Math.floor(i / cols)} data-c={i % cols} />)}
+    </div>
+  </div>
+</div>
+
+<style>
+  .wipe {
+    position: relative;
+    height: 0;
+    z-index: 6;
+  }
+  .wipe-fix {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    visibility: hidden;
+    clip-path: inset(0 0 var(--clip-b, 100%) 0);
+  }
+  .wipe.is-active .wipe-fix {
+    visibility: visible;
+  }
+  .wipe-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+  }
+  .wipe-grid i {
+    display: block;
+    margin: -0.5px;
+    transform: scaleY(var(--s, 0));
+    transform-origin: 50% 100%;
+  }
+  .wipe--to-light .wipe-grid i {
+    background: var(--fog-1);
+  }
+  .wipe--to-dark .wipe-grid i {
+    background: var(--ink-1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wipe-fix {
+      display: none;
+    }
+  }
+</style>

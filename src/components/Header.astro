@@ -1,0 +1,180 @@
+---
+import Logo from './Logo.astro';
+import { NAV } from '../config/site';
+---
+
+<header class="site-header" data-theme="dark" data-header transition:persist="site-header">
+  <a class="brand" href="/" aria-label="UPAMPI — inicio">
+    <Logo variant="full" />
+    <span class="brand-tag mono" aria-hidden="true">Smart<br />Software</span>
+  </a>
+
+  <nav class="nav" aria-label="Principal">
+    <ul>
+      {
+        NAV.map((item, i) => (
+          <li>
+            <a href={item.href} class="nav-link" data-nav={item.href}>
+              <span class="nav-i">0{i + 1}</span>
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="actions">
+    <button class="sound" type="button" data-sound-toggle aria-pressed="false" aria-label="Activar sonido">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"></path>
+        <g class="sound-off" stroke="currentColor" stroke-width="1.4" fill="none"><path d="M16 9.5l5 5M21 9.5l-5 5"></path></g>
+        <g class="sound-on" stroke="currentColor" stroke-width="1.4" fill="none"><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.6a7.6 7.6 0 0 1 0 10.8"></path></g>
+      </svg>
+    </button>
+    <a class="pill magnetic talk" href="/contacto">Hablemos</a>
+    <button class="pill pill--ghost magnetic" type="button" data-menu-open aria-expanded="false" aria-controls="site-menu">
+      Menú <span class="pill-burger" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 90;
+    height: var(--header-h);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding-inline: var(--gutter);
+    color: var(--fg);
+    view-transition-name: site-header;
+    transition:
+      color 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out);
+    pointer-events: none;
+  }
+  .site-header > * {
+    pointer-events: auto;
+  }
+  .site-header.is-hidden {
+    transform: translateY(-110%);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.15rem;
+    justify-self: start;
+  }
+  .brand :global(.logo-mark) {
+    height: 1.45em;
+  }
+  .brand :global(.logo-word) {
+    height: 0.78em;
+  }
+  .brand-tag {
+    margin-left: 0.6rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--line-strong);
+    font-size: 0.5625rem;
+    line-height: 1.25;
+    color: var(--fg-muted);
+  }
+
+  .nav ul {
+    display: flex;
+    gap: clamp(1rem, 2.2vw, 2.4rem);
+  }
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    font: 400 0.6875rem/1 var(--f-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.5rem 0;
+  }
+  .nav-i {
+    font-size: 0.5rem;
+    color: var(--fg-muted);
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .actions {
+    justify-self: end;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .sound {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--fg) 8%, transparent);
+    color: var(--fg-muted);
+    transition:
+      color 0.3s,
+      background-color 0.3s;
+  }
+  .sound svg {
+    width: 16px;
+  }
+  .sound .sound-on {
+    display: none;
+  }
+  .sound[aria-pressed='true'] {
+    color: var(--ink-0);
+    background: var(--signal);
+  }
+  .sound[aria-pressed='true'] .sound-on {
+    display: block;
+  }
+  .sound[aria-pressed='true'] .sound-off {
+    display: none;
+  }
+
+  @media (max-width: 1080px) {
+    .site-header {
+      grid-template-columns: 1fr auto;
+    }
+    .nav {
+      display: none;
+    }
+    .brand-tag {
+      display: none;
+    }
+  }
+  @media (max-width: 520px) {
+    .talk {
+      display: none;
+    }
+    .sound {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+</style>

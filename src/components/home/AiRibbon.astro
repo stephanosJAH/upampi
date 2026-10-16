@@ -1,0 +1,221 @@
+---
+import { aiFlow } from '../../data/content';
+const pairs = [
+  ['Factura escaneada', 'Factura registrada y validada'],
+  ['Mensajes sin responder', 'Respuestas del asistente'],
+  ['Hoja de inventario', 'Alerta de stock con pedido sugerido'],
+  ['Correo con un pedido', 'Pedido capturado en el sistema'],
+  ['Agenda en papel', 'Citas confirmadas automáticamente'],
+  ['Tickets del día', 'Tablero de ventas al día'],
+];
+---
+
+<section class="ia chapter" id="ia" data-theme="dark" aria-labelledby="ia-title">
+  <div class="ia-head wrap">
+    <h2 id="ia-title" class="ia-words display">
+      <span class="ia-w1" data-split-reveal>IA</span>
+      <span class="ia-micro mono" data-reveal>
+        Entra el desorden de todos los días.<br />Sale información lista para decidir.
+      </span>
+      <span class="ia-w2" data-split-reveal>en acción</span>
+    </h2>
+  </div>
+
+  <div class="ia-pin" data-module="ribbon">
+    <div class="ia-stage">
+      <canvas class="ia-canvas" aria-hidden="true"></canvas>
+      <div class="ia-flow" aria-hidden="true">
+        <p class="ia-in mono"><span class="signal">←</span> {aiFlow.steps[0].k}<br /><span class="muted">{aiFlow.inputs.slice(0, 4).join(' · ')}</span></p>
+        <p class="ia-core mono"><span class="signal">✦</span> {aiFlow.steps[1].k}</p>
+        <p class="ia-out mono">{aiFlow.steps[2].k} <span class="signal">→</span><br /><span class="muted">{aiFlow.outputs.slice(0, 4).join(' · ')}</span></p>
+      </div>
+      <div class="ia-final" aria-hidden="true">
+        <p class="display d-m">Antes y después, <span class="serif">con IA</span>.</p>
+        <p class="mono muted">Arriba: cómo llega hoy · Abajo: cómo queda</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap ia-list-wrap">
+    <div class="ia-steps">
+      {
+        aiFlow.steps.map((s, i) => (
+          <div class="ia-step" data-reveal={i * 0.08}>
+            <span class="mono signal">0{i + 1}</span>
+            <h3 class="d-s">{s.k}</h3>
+            <p class="muted">{s.t}</p>
+          </div>
+        ))
+      }
+    </div>
+    <ul class="ia-pairs">
+      {
+        pairs.map(([a, b]) => (
+          <li>
+            <span class="muted">{a}</span>
+            <span class="signal" aria-hidden="true">
+              →
+            </span>
+            <span class="sr-only">se convierte en</span>
+            <span>{b}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="mono-link" href="/servicios/implementacion-de-ia">Implementación de IA <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<style>
+  .ia {
+    position: relative;
+    background: var(--ink-0);
+    padding-top: 16vh;
+    padding-bottom: 18vh;
+  }
+  .ia-words {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 2rem;
+    font-size: clamp(4rem, 13vw, 15rem);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+  }
+  .ia-w1 {
+    grid-column: 1;
+  }
+  .ia-w2 {
+    grid-column: 1 / -1;
+    justify-self: end;
+    margin-top: -0.12em;
+  }
+  .ia-micro {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--fg-muted);
+  }
+  .ia-pin {
+    position: relative;
+    height: 460vh;
+    margin-top: 4vh;
+  }
+  .ia-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .ia-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .ia-flow {
+    position: absolute;
+    inset: auto var(--gutter) 10vh;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    opacity: var(--flow, 1);
+    pointer-events: none;
+  }
+  .ia-in {
+    justify-self: start;
+  }
+  .ia-core {
+    justify-self: center;
+  }
+  .ia-out {
+    justify-self: end;
+    text-align: right;
+  }
+  .ia-final {
+    position: absolute;
+    top: calc(var(--header-h) + 3vh);
+    left: 0;
+    right: 0;
+    display: grid;
+    gap: 0.8rem;
+    justify-items: center;
+    text-align: center;
+    opacity: var(--final, 0);
+    transform: translateY(calc((1 - var(--final, 0)) * 20px));
+    pointer-events: none;
+  }
+
+  .ia-list-wrap {
+    display: grid;
+    gap: 4rem;
+    margin-top: 6vh;
+  }
+  .ia-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    border-top: 1px solid var(--line);
+    padding-top: 2rem;
+  }
+  .ia-step {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+  }
+  .ia-pairs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 3rem;
+  }
+  .ia-pairs li {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.98rem;
+  }
+
+  @media (max-width: 860px) {
+    .ia-words {
+      grid-template-columns: 1fr;
+    }
+    .ia-micro {
+      grid-column: 1;
+      grid-row: auto;
+      text-align: left;
+    }
+    .ia-pin {
+      height: 380vh;
+    }
+    .ia-flow {
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .ia-core {
+      display: none;
+    }
+    .ia-steps,
+    .ia-pairs {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ia-pin {
+      height: 100vh;
+    }
+    .ia-flow {
+      --flow: 0;
+    }
+    .ia-final {
+      --final: 1;
+    }
+  }
+</style>

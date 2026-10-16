@@ -1,0 +1,276 @@
+---
+import Base from '../../layouts/Base.astro';
+import Wipe from '../../components/Wipe.astro';
+import SolutionArt from '../../components/SolutionArt.astro';
+import { solutions, categoryLabel, type Solution } from '../../data/solutions';
+import { getService } from '../../data/services';
+import { SITE } from '../../config/site';
+
+export function getStaticPaths() {
+  return solutions.map((s, i) => ({
+    params: { slug: s.slug },
+    props: { s, next: solutions[(i + 1) % solutions.length] },
+  }));
+}
+interface Props {
+  s: Solution;
+  next: Solution;
+}
+const { s, next } = Astro.props;
+const related = s.services.map(getService).filter((x) => !!x);
+---
+
+<Base title={`${s.title} · ${s.industry}`} description={`${s.line} Solución ilustrativa para ${s.industry.toLowerCase()} por UPAMPI.`} theme="light" ogImage={`/og/soluciones/${s.slug}.png`}>
+  <article class="sd chapter" data-theme="light">
+    <header class="wrap sd-head">
+      <nav class="sd-crumbs mono" aria-label="Migas de pan">
+        <a href="/soluciones">← Soluciones</a>
+        <span aria-hidden="true">/</span>
+        <span>{s.num}</span>
+      </nav>
+      <div class="sd-meta">
+        <span class="label">{s.industry}</span>
+        <span class="label">{s.categories.map(categoryLabel).join(' · ')}</span>
+      </div>
+      <h1 class="display d-xl sd-title" transition:name={`sol-title-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph-title">
+        {s.title}
+      </h1>
+      <p class="lede sd-line">{s.line}</p>
+    </header>
+
+    <div class="sd-media wrap">
+      <div class="sd-media-inner" transition:name={`sol-media-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph">
+        <SolutionArt art={s.art} tone={s.tone} />
+      </div>
+    </div>
+
+    <section class="wrap sd-block sd-scenario" aria-labelledby="esc">
+      <h2 id="esc" class="label spark">El escenario · ejemplo ilustrativo</h2>
+      <p class="display d-m" data-split-reveal>{s.scenario}</p>
+    </section>
+
+    <section class="wrap sd-block sd-ba" aria-label="Antes y después">
+      <div>
+        <h2 class="label">Antes</h2>
+        <ul>{s.before.map((b) => <li data-reveal>{b}</li>)}</ul>
+      </div>
+      <div class="sd-after">
+        <h2 class="label">Con la solución</h2>
+        <ul>{s.after.map((b) => <li data-reveal>{b}</li>)}</ul>
+      </div>
+    </section>
+
+    <section class="wrap sd-block" aria-labelledby="flow">
+      <h2 id="flow" class="label spark">Cómo funciona</h2>
+      <ol class="sd-flow">
+        {
+          s.flow.map((f, i) => (
+            <li data-reveal={i * 0.06}>
+              <span class="mono">0{i + 1}</span>
+              <h3 class="d-s">{f.step}</h3>
+              <p>{f.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="wrap sd-block sd-two" aria-label="Piezas y servicios">
+      <div>
+        <h2 class="label">Piezas que lo hacen posible</h2>
+        <ul class="sd-chips">{s.stack.map((t) => <li class="chip">{t}</li>)}</ul>
+      </div>
+      <div>
+        <h2 class="label">Servicios relacionados</h2>
+        <ul class="sd-rel">
+          {
+            related.map((r) => (
+              <li>
+                <a href={`/servicios/${r!.slug}`} class="mono-link">
+                  {r!.title} <span class="arrow">→</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap sd-cta" aria-labelledby="cta">
+      <h2 id="cta" class="display d-l">¿Algo así para tu negocio?</h2>
+      <p class="muted">Cuéntanos cómo trabajas hoy. En el diagnóstico vemos si una solución como esta tiene sentido para ti.</p>
+      <div class="sd-cta-row">
+        <a class="pill magnetic" href={`/contacto?tipo=diagnostico&solucion=${s.slug}`}>Agenda un diagnóstico</a>
+        <a class="mono-link" href={SITE.bookingUrl}>Llamada de 30 min <span class="arrow">→</span></a>
+      </div>
+    </section>
+
+    <a class="sd-next wrap" href={`/soluciones/${next.slug}`} data-cursor-view="Siguiente">
+      <span class="label">Siguiente solución · {next.industry}</span>
+      <div class="sd-next-row">
+        <span class="display d-l sd-next-title">{next.title}</span>
+        <div class="sd-next-media" transition:name={`sol-media-${next.slug}`} data-vt-key={next.slug} style="view-transition-class: morph">
+          <SolutionArt art={next.art} tone={next.tone} />
+        </div>
+      </div>
+    </a>
+  </article>
+  <Wipe to="dark" />
+</Base>
+
+<style>
+  .sd {
+    padding-top: calc(var(--header-h) + 8vh);
+    padding-bottom: 14vh;
+  }
+  .sd-head {
+    display: grid;
+    gap: 1.4rem;
+  }
+  .sd-crumbs {
+    display: flex;
+    gap: 0.8rem;
+    color: var(--fg-muted);
+  }
+  .sd-crumbs a:hover {
+    color: var(--fg);
+  }
+  .sd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+  }
+  .sd-title {
+    max-width: 14ch;
+    width: fit-content;
+  }
+  .sd-media {
+    margin-top: 6vh;
+  }
+  .sd-media-inner {
+    aspect-ratio: 21 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .sd-block {
+    margin-top: 16vh;
+  }
+  .sd-scenario {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: 2rem;
+  }
+  .sd-ba {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .sd-ba ul {
+    margin-top: 1.2rem;
+  }
+  .sd-ba li {
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--line);
+    font-size: 1.15rem;
+    letter-spacing: -0.015em;
+  }
+  .sd-ba > div:first-child li {
+    color: #6a6d72;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgb(11 12 14 / 0.3);
+  }
+  .sd-after {
+    background: var(--ink-1);
+    color: #eceee8;
+    padding: 1.6rem;
+    border-radius: 10px;
+    --line: rgb(236 238 232 / 0.14);
+  }
+  .sd-after .label {
+    color: var(--signal);
+  }
+  .sd-flow {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    counter-reset: f;
+  }
+  .sd-flow li {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line-strong);
+  }
+  .sd-flow p {
+    color: #3d4046;
+  }
+  .sd-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .sd-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+  .sd-rel {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+  .sd-cta {
+    margin-top: 18vh;
+    display: grid;
+    gap: 1.4rem;
+    justify-items: start;
+  }
+  .sd-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+  }
+  .sd-next {
+    display: grid;
+    gap: 1rem;
+    margin-top: 16vh;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .sd-next-row {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 360px);
+    gap: 2rem;
+    align-items: end;
+  }
+  .sd-next-title {
+    transition: transform 0.6s var(--ease-out);
+  }
+  .sd-next:hover .sd-next-title {
+    transform: translateX(1rem);
+  }
+  .sd-next-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  @media (max-width: 860px) {
+    .sd-media-inner {
+      aspect-ratio: 4 / 3;
+    }
+    .sd-scenario,
+    .sd-ba,
+    .sd-two,
+    .sd-next-row {
+      grid-template-columns: 1fr;
+    }
+    .sd-flow {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,269 @@
+---
+import { services } from '../../data/services';
+import ServiceIcon from '../ServiceIcon.astro';
+---
+
+<section class="svc chapter" id="servicios" data-theme="light" data-module="services" aria-labelledby="svc-title">
+  <h2 id="svc-title" class="sr-only">Servicios</h2>
+  <div class="svc-stage">
+    <div class="svc-dark" aria-hidden="true"></div>
+
+    <div class="svc-words" aria-hidden="true">
+      {services.map((s) => <span class="svc-word">{s.word}</span>)}
+    </div>
+
+    <canvas class="svc-canvas" aria-hidden="true"></canvas>
+
+    <p class="svc-kicker mono" aria-hidden="true">
+      <span data-svc-step="0"><span class="signal">✦</span> Del bloque en bruto…</span>
+      <span data-svc-step="1"><span class="signal">✦</span> …a un sistema compilado</span>
+    </p>
+
+    <ol class="svc-cards">
+      {
+        services.map((s, i) => (
+          <li class:list={['svc-card', i % 2 ? 'is-right' : 'is-left']}>
+            <a href={`/servicios/${s.slug}`} class="svc-link">
+              <div class="svc-card-top">
+                <span class="mono svc-i">{s.index}</span>
+                <span class="svc-ico" transition:name={`svc-icon-${s.slug}`} data-vt-key={s.slug}>
+                  <ServiceIcon icon={s.icon} draw={false} />
+                </span>
+              </div>
+              <h3 class="svc-title" transition:name={`svc-title-${s.slug}`} data-vt-key={s.slug} style="view-transition-class: morph-title">
+                {s.title}
+              </h3>
+              <p class="svc-short">{s.short}</p>
+              <span class="mono-link">
+                Ver servicio <span class="arrow">→</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="svc-foot wrap">
+      <p class="mono spark">Seis disciplinas. Un solo estándar: que funcione.</p>
+      <a class="mono-link" href="/servicios">Ver servicios <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .svc {
+    position: relative;
+    height: 760vh;
+    background: var(--fog-1);
+  }
+  .svc-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .svc-dark {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 90% at 50% 40%, #16181c 0%, var(--ink-0) 70%);
+    opacity: var(--dark, 0);
+  }
+  .svc-words {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    padding-top: var(--header-h);
+    color: color-mix(in srgb, #0b0c0e calc((1 - var(--dark, 0)) * 100%), #e9ebe5);
+  }
+  .svc-word {
+    display: block;
+    font-size: min(12.4vh, 11vw);
+    line-height: 0.86;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+  .svc-word :global(.ch) {
+    display: inline-block;
+    will-change: transform;
+  }
+  .svc-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .svc-kicker {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--header-h) + 1.4rem);
+    translate: -50% 0;
+    z-index: 3;
+    color: #cfd2cc;
+    display: grid;
+    justify-items: center;
+  }
+  .svc-kicker > span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .svc-cards {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 4;
+    padding: 100vh var(--gutter) 40vh;
+    display: grid;
+    gap: 34vh;
+    will-change: transform;
+  }
+  .svc-card {
+    width: min(27vw, 420px);
+  }
+  .svc-card.is-left {
+    justify-self: start;
+    margin-left: 4vw;
+  }
+  .svc-card.is-right {
+    justify-self: end;
+    margin-right: 4vw;
+  }
+  .svc-link {
+    display: grid;
+    gap: 1.1rem;
+    padding: 1.5rem;
+    border: 1px solid rgb(236 238 232 / 0.16);
+    border-radius: 10px;
+    background: rgb(12 13 15 / 0.62);
+    backdrop-filter: blur(10px);
+    color: #eceee8;
+    transition:
+      border-color 0.4s,
+      background-color 0.4s;
+  }
+  .svc-link:hover {
+    border-color: var(--signal);
+    background: rgb(12 13 15 / 0.82);
+  }
+  .svc-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+  }
+  .svc-i {
+    color: var(--signal);
+  }
+  .svc-ico {
+    display: block;
+    width: 84px;
+    color: #e9ebe5;
+  }
+  .svc-title {
+    font-size: clamp(1.5rem, 2.1vw, 2.2rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    width: fit-content;
+  }
+  .svc-short {
+    color: #b4b8b2;
+    font-size: 0.95rem;
+    line-height: 1.42;
+  }
+  .svc-link .mono-link {
+    justify-self: start;
+    color: #eceee8;
+  }
+
+  .svc-foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 7rem;
+    padding-bottom: 1.5rem;
+    background: linear-gradient(to top, var(--ink-0) 38%, rgb(5 6 7 / 0));
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: var(--fg);
+    opacity: var(--foot, 0);
+  }
+  .svc-foot .mono-link,
+  .svc-foot p {
+    color: #e9ebe5;
+  }
+  .svc-foot .mono-link {
+    pointer-events: auto;
+  }
+
+  @media (max-width: 860px) {
+    .svc-card {
+      width: min(86vw, 420px);
+    }
+    .svc-card.is-left,
+    .svc-card.is-right {
+      justify-self: center;
+      margin: 0;
+    }
+    .svc-cards {
+      gap: 26vh;
+      padding-top: 105vh;
+    }
+    .svc-foot {
+      flex-direction: column;
+      align-items: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc {
+      height: auto;
+      --dark: 1;
+      --foot: 1;
+      background: var(--ink-0);
+    }
+    .svc-stage {
+      position: relative;
+      height: auto;
+      overflow: visible;
+      padding-bottom: 6rem;
+    }
+    .svc-words {
+      position: relative;
+      inset: auto;
+      min-height: 100vh;
+    }
+    .svc-canvas,
+    .svc-kicker {
+      display: none;
+    }
+    .svc-cards {
+      position: relative;
+      padding: 4rem var(--gutter);
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    }
+    .svc-card,
+    .svc-card.is-left,
+    .svc-card.is-right {
+      width: auto;
+      margin: 0;
+      justify-self: stretch;
+    }
+    .svc-foot {
+      position: relative;
+    }
+  }
+</style>

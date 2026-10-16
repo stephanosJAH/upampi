@@ -1,0 +1,170 @@
+---
+import { facts, capabilities } from '../../data/content';
+---
+
+<section class="facts chapter" data-theme="light" data-module="facts" aria-labelledby="facts-title">
+  <div class="wrap facts-head">
+    <h2 id="facts-title" class="display d-xl" data-blur-reveal>Sin letra pequeña</h2>
+    <p class="facts-sub">Tres compromisos con los que<br />empieza cualquier proyecto.</p>
+  </div>
+
+  <div class="facts-cards wrap">
+    <article class="fcard fcard--dark" data-tilt="left">
+      <p class="label fk">{facts[0].kicker}</p>
+      <svg class="fc-art" viewBox="0 0 200 200" fill="none" stroke="currentColor" aria-hidden="true" data-draw>
+        {[0, 1, 2, 3, 4].map((i) => <circle cx="88" cy="86" r={18 + i * 12} stroke-opacity={1 - i * 0.17} />)}
+        <path d="M128 126 L176 174" stroke-width="6" stroke="#cdff3b" />
+        <path d="M70 86 h36 M88 68 v36" />
+      </svg>
+      <h3 class="d-s">{facts[0].title}</h3>
+      <p class="fc-text">{facts[0].text}</p>
+    </article>
+
+    <article class="fcard fcard--mid" data-tilt="mid">
+      <p class="label fk">{facts[1].kicker}</p>
+      <div class="fc-circle"><span class="serif">{facts[1].title}</span></div>
+      <p class="fc-text center">{facts[1].text}</p>
+    </article>
+
+    <article class="fcard fcard--signal" data-tilt="right">
+      <p class="label fk">{facts[2].kicker}</p>
+      <svg class="fc-art" viewBox="0 0 200 200" fill="none" stroke="currentColor" aria-hidden="true" data-draw>
+        {[0, 1, 2, 3, 4].map((i) => <path d={`M${20 + i * 34} 180 V${150 - i * 28} H${48 + i * 34}`} stroke-width="1.4" />)}
+        <path d="M20 180 H190" />
+        <circle cx="182" cy="34" r="6" fill="currentColor" />
+      </svg>
+      <h3 class="d-s">{facts[2].title}</h3>
+      <p class="fc-text">{facts[2].text}</p>
+    </article>
+  </div>
+
+  <div class="wrap caps">
+    <p class="label caps-label">Construimos con</p>
+    <ul class="caps-row">
+      {capabilities.map((c) => <li>{c}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .facts {
+    padding-block: 12vh 10vh;
+    overflow: clip;
+  }
+  .facts-head {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1.2rem;
+  }
+  .facts-sub {
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+  .facts-cards {
+    margin-top: 9vh;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 3rem);
+    perspective: 1400px;
+    max-width: 1240px;
+  }
+  .fcard {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    gap: 1.25rem;
+    min-height: clamp(420px, 34vw, 540px);
+    padding: 1.6rem;
+    border-radius: 10px;
+    transform-style: preserve-3d;
+    will-change: transform;
+    color: #0b0c0e;
+  }
+  .fcard--dark {
+    background: #0f1114;
+    color: #eceee8;
+  }
+  .fcard--dark .label {
+    color: #9a9ea5;
+  }
+  .fcard--mid {
+    background: transparent;
+    justify-items: center;
+    align-content: center;
+  }
+  .fcard--signal {
+    background: var(--signal);
+  }
+  .fcard--signal .label {
+    color: #2f3a0c;
+  }
+  .fc-art {
+    width: 62%;
+    justify-self: center;
+  }
+  .fc-text {
+    font-size: 0.98rem;
+    line-height: 1.4;
+    max-width: 30ch;
+  }
+  .fc-text.center {
+    text-align: center;
+    margin-top: 1.4rem;
+  }
+  .fc-circle {
+    width: min(78%, 280px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #f5f6f2;
+    display: grid;
+    place-items: center;
+    box-shadow:
+      0 30px 60px -30px rgb(0 0 0 / 0.25),
+      inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  }
+  .fc-circle span {
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+  }
+  .fk {
+    align-self: start;
+  }
+  .fcard--mid .fk {
+    margin-bottom: 1.6rem;
+  }
+
+  .caps {
+    margin-top: 12vh;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    border-block: 1px solid var(--line);
+    padding-block: 1.6rem;
+  }
+  .caps-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0;
+  }
+  .caps-row li {
+    padding-inline: 1.4rem;
+    border-left: 1px solid var(--line-strong);
+    font-size: 1.05rem;
+    letter-spacing: -0.015em;
+    color: #3a3d42;
+  }
+
+  @media (max-width: 860px) {
+    .facts-cards {
+      grid-template-columns: 1fr;
+      perspective: none;
+    }
+    .fcard {
+      min-height: 360px;
+    }
+    .caps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

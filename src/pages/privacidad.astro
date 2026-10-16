@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config/site';
+---
+
+<Base title="Aviso de privacidad" description="Cómo UPAMPI trata los datos que envías a través del formulario de contacto." theme="light">
+  <article class="legal chapter wrap" data-theme="light">
+    <p class="label spark">Aviso de privacidad · borrador editable</p>
+    <h1 class="display d-l">Aviso de privacidad</h1>
+    <div class="legal-body">
+      <p>
+        Este texto es una base que debe revisarse con asesoría legal según el país donde opera UPAMPI antes de publicarse.
+      </p>
+      <h2 class="d-s">Qué datos recogemos</h2>
+      <p>
+        Solo los que nos envías en el formulario de contacto: nombre, correo, empresa (opcional), servicios de interés,
+        presupuesto estimado y la descripción de tu proyecto. También registramos la dirección IP de forma temporal para
+        prevenir abuso del formulario.
+      </p>
+      <h2 class="d-s">Para qué los usamos</h2>
+      <p>Para responder tu solicitud y, si así lo acordamos, preparar un diagnóstico o una propuesta. No vendemos ni cedemos tus datos.</p>
+      <h2 class="d-s">Cuánto tiempo los guardamos</h2>
+      <p>Mientras dure la conversación comercial y, después, solo lo necesario para cumplir obligaciones legales.</p>
+      <h2 class="d-s">Tus derechos</h2>
+      <p>
+        Puedes pedir acceso, corrección o eliminación de tus datos escribiendo a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+      <h2 class="d-s">Cookies</h2>
+      <p>Este sitio no usa cookies de seguimiento ni analítica de terceros. Solo guarda en tu navegador, durante la sesión, si activaste el sonido.</p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    padding-top: calc(var(--header-h) + 10vh);
+    padding-bottom: 16vh;
+    display: grid;
+    gap: 2rem;
+    min-height: 100vh;
+  }
+  .legal-body {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 62ch;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .legal-body h2 {
+    margin-top: 1.6rem;
+  }
+  .legal-body a {
+    text-decoration: underline;
+  }
+</style>

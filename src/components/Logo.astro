@@ -1,0 +1,52 @@
+---
+import { GLYPHS, WORDMARK_WIDTH, CAP, STROKE, MARK } from '../lib/brand.mjs';
+
+interface Props {
+  variant?: 'full' | 'mark' | 'word';
+  class?: string;
+  bit?: 'signal' | 'current';
+}
+const { variant = 'full', class: cls, bit = 'signal' } = Astro.props;
+const b = MARK.bit;
+---
+
+{
+  (variant === 'full' || variant === 'mark') && (
+    <svg
+      class:list={['logo-mark', variant === 'mark' && cls]}
+      viewBox={MARK.viewBox}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={MARK.path} fill="none" stroke="currentColor" stroke-width={MARK.stroke} stroke-linecap="butt" />
+      <rect x={b.x} y={b.y} width={b.size} height={b.size} style={bit === 'signal' ? 'fill:var(--signal)' : 'fill:currentColor'} />
+    </svg>
+  )
+}
+{
+  (variant === 'full' || variant === 'word') && (
+    <svg
+      class:list={['logo-word', variant === 'word' && cls]}
+      viewBox={`-0.2 -0.6 ${WORDMARK_WIDTH + 0.4} ${CAP + 1.2}`}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g fill="none" stroke="currentColor" stroke-width={STROKE} stroke-linejoin="miter" stroke-miterlimit="1.6">
+        {GLYPHS.map((g) => <path d={g.d} transform={`translate(${g.x} 0)`} />)}
+      </g>
+    </svg>
+  )
+}
+
+<style>
+  .logo-mark {
+    height: 1.55em;
+    width: auto;
+    overflow: visible;
+  }
+  .logo-word {
+    height: 0.82em;
+    width: auto;
+    overflow: visible;
+  }
+</style>

@@ -1,0 +1,306 @@
+---
+import Base from '../layouts/Base.astro';
+import Wipe from '../components/Wipe.astro';
+import { SITE } from '../config/site';
+import { SERVICE_OPTIONS, BUDGET_OPTIONS, MESSAGE_MIN, MESSAGE_MAX } from '../data/contact';
+---
+
+<Base
+  title="Contacto"
+  description="Cuéntanos tu proyecto o agenda un diagnóstico sin costo. UPAMPI diseña software, automatizaciones e IA para pymes y profesionales."
+  theme="light"
+  ogImage="/og/contacto.png"
+>
+  <section class="ct chapter" data-theme="light" data-module="contact">
+    <div class="wrap ct-grid">
+      <div class="ct-side">
+        <p class="label spark">Contacto</p>
+        <h1 class="display d-xl ct-title" data-split-reveal>Cuéntanos tu <span class="serif">proyecto</span>.</h1>
+        <p class="lede">Unas pocas preguntas nos ayudan a llegar a la primera conversación con ideas concretas.</p>
+        <div class="ct-info">
+          <p class="mono" data-reply>{SITE.replyTime}</p>
+          <a class="mono-link" href={`mailto:${SITE.email}`}>{SITE.email} <span class="arrow">↗</span></a>
+          <a class="mono-link" href={SITE.bookingUrl} data-booking>Prefiero una llamada de 30 min <span class="arrow">→</span></a>
+        </div>
+        <ol class="ct-next">
+          <li><span class="mono">01</span> Leemos tu mensaje con calma.</li>
+          <li><span class="mono">02</span> Te respondemos con preguntas o una propuesta de llamada.</li>
+          <li><span class="mono">03</span> Hacemos el diagnóstico inicial, sin costo.</li>
+        </ol>
+      </div>
+
+      <form class="ct-form" method="post" action="/api/contact" novalidate data-contact-form>
+        <div class="field-row">
+          <label class="field">
+            <span class="label">Nombre *</span>
+            <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" />
+            <span class="err" data-err="name"></span>
+          </label>
+          <label class="field">
+            <span class="label">Correo *</span>
+            <input name="email" type="email" autocomplete="email" required maxlength="200" inputmode="email" />
+            <span class="err" data-err="email"></span>
+          </label>
+        </div>
+        <label class="field">
+          <span class="label">Empresa o negocio</span>
+          <input name="company" type="text" autocomplete="organization" maxlength="160" />
+        </label>
+
+        <fieldset class="field">
+          <legend class="label">¿En qué te podemos ayudar? *</legend>
+          <div class="chips">
+            {
+              SERVICE_OPTIONS.map((o) => (
+                <label class="chip-opt">
+                  <input type="checkbox" name="services" value={o.id} class="sr-only" />
+                  <span class="chip">{o.label}</span>
+                </label>
+              ))
+            }
+          </div>
+          <span class="err" data-err="services"></span>
+        </fieldset>
+
+        <label class="field">
+          <span class="label">Cuéntanos qué quieres resolver *</span>
+          <textarea name="message" rows="6" required minlength={MESSAGE_MIN} maxlength={MESSAGE_MAX} placeholder="Ej.: Tenemos una tienda con dos sucursales y el inventario lo llevamos en hojas de cálculo…"></textarea>
+          <span class="hint mono"><span data-count>0</span> / mínimo {MESSAGE_MIN} caracteres</span>
+          <span class="err" data-err="message"></span>
+        </label>
+
+        <fieldset class="field">
+          <legend class="label">Presupuesto estimado *</legend>
+          <div class="chips">
+            {
+              BUDGET_OPTIONS.map((o, i) => (
+                <label class="chip-opt">
+                  <input type="radio" name="budget" value={o.id} class="sr-only" checked={i === 0} />
+                  <span class="chip">{o.label}</span>
+                </label>
+              ))
+            }
+          </div>
+          <span class="err" data-err="budget"></span>
+        </fieldset>
+
+        <!-- anti-spam: honeypot + time-to-submit -->
+        <div class="hp" aria-hidden="true">
+          <label>No llenar este campo <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <input type="hidden" name="ts" value="" data-ts />
+        <input type="hidden" name="source" value="" data-source />
+
+        <label class="consent">
+          <input type="checkbox" name="consent" value="yes" required />
+          <span>Acepto que UPAMPI use estos datos para responder a mi solicitud, según el <a href="/privacidad">aviso de privacidad</a>.</span>
+        </label>
+        <span class="err" data-err="consent"></span>
+
+        <div class="ct-submit">
+          <button class="pill magnetic" type="submit" data-submit>
+            <span data-submit-label>Enviar solicitud</span> <span aria-hidden="true">→</span>
+          </button>
+          <p class="status mono" role="status" aria-live="polite" data-status></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="ct-done wrap" hidden data-done tabindex="-1">
+      <p class="label spark">Solicitud enviada</p>
+      <h2 class="display d-xl">Gracias. <span class="serif">Ya estamos en ello.</span></h2>
+      <p class="lede">{SITE.replyTime} Mientras tanto, puedes explorar algunas soluciones.</p>
+      <div class="ct-done-row">
+        <a class="mono-link" href="/soluciones">Ver soluciones <span class="arrow">→</span></a>
+        <a class="mono-link" href="/">Volver al inicio <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+  <Wipe to="dark" />
+</Base>
+
+<style>
+  .ct {
+    padding-top: calc(var(--header-h) + 8vh);
+    padding-bottom: 20vh;
+    min-height: 100vh;
+  }
+  .ct-grid[hidden] {
+    display: none;
+  }
+  .ct-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: start;
+  }
+  .ct-side {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: grid;
+    gap: 1.8rem;
+    justify-items: start;
+  }
+  .ct-title {
+    max-width: 9ch;
+  }
+  .ct-info {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+  }
+  .ct-next {
+    display: grid;
+    gap: 0.6rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.2rem;
+  }
+  .ct-next li {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+  }
+  .ct-form {
+    display: grid;
+    gap: 2rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    background: #e6e7e2;
+    border-radius: 14px;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.6rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  legend {
+    margin-bottom: 0.8rem;
+    padding: 0;
+  }
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    padding: 0.7rem 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgb(11 12 14 / 0.42);
+    font-size: 1.2rem;
+    letter-spacing: -0.015em;
+    border-radius: 0;
+    transition: border-color 0.3s;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 9rem;
+    line-height: 1.45;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-bottom-color: var(--ink-0);
+    box-shadow: 0 1px 0 0 var(--ink-0);
+  }
+  [aria-invalid='true'] {
+    border-bottom-color: #b3261e !important;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .chip-opt {
+    cursor: pointer;
+  }
+  .chip-opt input:focus-visible + .chip {
+    outline: 2px solid var(--ink-0);
+    outline-offset: 2px;
+  }
+  .hint {
+    color: var(--fg-muted);
+    text-transform: none;
+  }
+  .err {
+    color: #b3261e;
+    font: 400 0.6875rem/1.4 var(--f-mono);
+    min-height: 0;
+  }
+  .err:empty {
+    display: none;
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .consent {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+    font-size: 0.92rem;
+    align-items: start;
+  }
+  .consent input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    accent-color: var(--ink-0);
+  }
+  .consent a {
+    text-decoration: underline;
+  }
+  .ct-submit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+  }
+  .ct-submit .pill {
+    height: 3.2rem;
+    padding-inline: 1.6rem;
+    font-size: 0.75rem;
+  }
+  .ct-submit .pill[aria-busy='true'] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .status[data-kind='error'] {
+    color: #b3261e;
+  }
+  .status[data-kind='ok'] {
+    color: var(--ink-0);
+  }
+  .ct-done {
+    display: grid;
+    gap: 1.8rem;
+    justify-items: start;
+    min-height: 60vh;
+    align-content: center;
+  }
+  .ct-done[hidden] {
+    display: none;
+  }
+  .ct-done-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+  }
+  @media (max-width: 860px) {
+    .ct-grid,
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+    .ct-side {
+      position: relative;
+      top: 0;
+    }
+  }
+</style>

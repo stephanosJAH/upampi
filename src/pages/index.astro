@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroChapter from '../components/home/HeroChapter.astro';
+import Wipe from '../components/Wipe.astro';
+import Facts from '../components/home/Facts.astro';
+import Audience from '../components/home/Audience.astro';
+import SolutionsRail from '../components/home/SolutionsRail.astro';
+import Services from '../components/home/Services.astro';
+import AiRibbon from '../components/home/AiRibbon.astro';
+import Process from '../components/home/Process.astro';
+import Faq from '../components/home/Faq.astro';
+---
+
+<Base preloader theme="dark">
+  <HeroChapter />
+  <Wipe to="light" />
+  <Facts />
+  <Audience />
+  <SolutionsRail />
+  <Services />
+  <AiRibbon />
+  <Wipe to="light" />
+  <Process />
+  <Faq />
+  <Wipe to="dark" />
+</Base>
