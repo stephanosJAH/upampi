@@ -7,7 +7,11 @@ import { GLYPHS, WORDMARK_WIDTH, CAP, STROKE } from '../../lib/brand.mjs';
 import { pluck } from '../lib/sound';
 import type { PageCtx } from '../lib/env';
 
-type Row = { y: number; segs: [number, number][]; off: number; vel: number; px: number };
+type Row = { y: number; segs: [number, number][]; off: number; vel: number; px: number; t: number };
+
+const MAX_OFF = 14;
+const MAX_VEL = 12;
+const clamp = (v: number, m: number) => Math.max(-m, Math.min(m, v));
 
 export default function init(root: HTMLElement, ctx: PageCtx) {
   const canvas = root.querySelector<HTMLCanvasElement>('canvas')!;
@@ -60,7 +64,7 @@ export default function init(root: HTMLElement, ctx: PageCtx) {
         }
       }
       if (start >= 0) segs.push([start, off.width]);
-      if (segs.length) rows.push({ y, segs, off: 0, vel: 0, px: 0 });
+      if (segs.length) rows.push({ y, segs, off: 0, vel: 0, px: 0, t: 0 });
     }
     root.classList.add('is-live');
     draw();
@@ -106,7 +110,7 @@ export default function init(root: HTMLElement, ctx: PageCtx) {
     for (const r of rows) {
       r.vel += -r.off * 0.18;
       r.vel *= 0.86;
-      r.off += r.vel;
+      r.off = clamp(r.off + r.vel, MAX_OFF);
       energy += Math.abs(r.off) + Math.abs(r.vel);
     }
     draw();
@@ -131,13 +135,16 @@ export default function init(root: HTMLElement, ctx: PageCtx) {
     if (ctx.reduced) return draw();
     const lo = Math.min(prevY, y);
     const hi = Math.max(prevY, y);
+    const now = performance.now();
     rows.forEach((row, i) => {
-      // pluck every line the pointer crossed this frame
-      if (row.y >= lo - 2 && row.y <= hi + 2 && Math.abs(prevY - y) < 200) {
-        row.px = x;
-        row.vel += Math.sign(y - prevY || 1) * Math.min(9, 2 + Math.abs(y - prevY) * 0.25);
-        pluck(1 - i / rows.length);
-      }
+      // pluck only lines the pointer actually crossed this move, with a short
+      // per-line cooldown so jitter can't keep pumping energy into one string
+      if (y === prevY || row.y < lo || row.y > hi || hi - lo >= 200) return;
+      if (now - row.t < 90) return;
+      row.t = now;
+      row.px = x;
+      row.vel = clamp(row.vel + Math.sign(y - prevY) * Math.min(9, 2 + (hi - lo) * 0.25), MAX_VEL);
+      pluck(1 - i / rows.length);
     });
     kick();
   };
